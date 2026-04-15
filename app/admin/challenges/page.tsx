@@ -43,15 +43,35 @@ export default function AdminChallengesPage() {
   const [description, setDescription] = useState("");
   const [industryNote, setIndustryNote] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
 
   useEffect(() => {
     const edit = searchParams.get("edit");
     const day = searchParams.get("day");
     const dom = searchParams.get("domain");
-    if (day) setDayNumber(day);
-    if (dom && DOMAINS.includes(dom)) setDomain(dom);
-    if (dom && DOMAINS.includes(dom)) setFilterDomain(dom);
-  }, [searchParams]);
+
+    if (edit && challenges.length > 0) {
+      const c = challenges.find((ch) => ch.id === edit);
+      if (c) {
+        setEditingId(c.id);
+        setDayNumber(String(c.dayNumber));
+        setDomain(c.domain);
+        setFilterDomain(c.domain);
+        setCategory(c.category);
+        setDifficulty(c.difficulty);
+        setDescription(c.description);
+        setIndustryNote(c.industryNote || "");
+      }
+    } else if (!edit) {
+      setEditingId(null);
+      if (day) setDayNumber(day);
+      else setDayNumber("");
+      if (dom && DOMAINS.includes(dom)) {
+        setDomain(dom);
+        setFilterDomain(dom);
+      }
+    }
+  }, [searchParams, challenges]);
 
   useEffect(() => {
     fetch("/api/admin/challenges")
@@ -77,29 +97,50 @@ export default function AdminChallengesPage() {
     setSubmitting(true);
     setError(null);
     try {
-      const res = await fetch("/api/admin/challenges", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          dayNumber: day,
-          domain,
-          category,
-          difficulty,
-          description,
-          industryNote,
-        }),
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Could not create");
-      setDayNumber("");
-      setDescription("");
-      setIndustryNote("");
-      setCategory("");
-      setDifficulty("Easy");
-      setChallenges((prev) => [...prev, data.challenge]);
+      if (editingId) {
+        const res = await fetch(`/api/admin/challenges/${editingId}`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            dayNumber: day,
+            domain,
+            category,
+            difficulty,
+            description,
+            industryNote,
+          }),
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || "Could not update");
+        setChallenges((prev) =>
+          prev.map((c) => (c.id === editingId ? data.challenge : c))
+        );
+        router.push("/admin/challenges");
+      } else {
+        const res = await fetch("/api/admin/challenges", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            dayNumber: day,
+            domain,
+            category,
+            difficulty,
+            description,
+            industryNote,
+          }),
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || "Could not create");
+        setDayNumber("");
+        setDescription("");
+        setIndustryNote("");
+        setCategory("");
+        setDifficulty("Easy");
+        setChallenges((prev) => [...prev, data.challenge]);
+      }
       router.refresh();
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Could not create challenge");
+      setError(e instanceof Error ? e.message : "Could not save challenge");
     } finally {
       setSubmitting(false);
     }
@@ -209,7 +250,7 @@ export default function AdminChallengesPage() {
         {/* Add challenge form */}
         <Card>
           <CardHeader>
-            <CardTitle>Add challenge</CardTitle>
+            <CardTitle>{editingId ? "Edit challenge" : "Add challenge"}</CardTitle>
             <CardDescription>Day 1–60, one challenge per (day, domain).</CardDescription>
           </CardHeader>
           <CardContent>
@@ -284,9 +325,20 @@ export default function AdminChallengesPage() {
                   rows={2}
                 />
               </div>
-              <Button type="submit" disabled={submitting}>
-                {submitting ? "Creating…" : "Add challenge"}
-              </Button>
+              <div className="flex gap-2">
+                <Button type="submit" disabled={submitting}>
+                  {submitting ? "Saving…" : editingId ? "Update challenge" : "Add challenge"}
+                </Button>
+                {editingId && (
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => router.push("/admin/challenges")}
+                  >
+                    Cancel
+                  </Button>
+                )}
+              </div>
             </form>
           </CardContent>
         </Card>
