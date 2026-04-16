@@ -26,22 +26,33 @@ import type { CommunityStat } from "@/lib/landing-content";
 export const dynamic = "force-dynamic";
 
 export default async function HomePage() {
-  const [user, events, podcasts, userCount, submissionCount, eventCount] =
-    await Promise.all([
-      getCurrentUser(),
-      prisma.event.findMany({
-        where: { date: { gte: new Date() } },
-        orderBy: { date: "asc" },
-        take: 3,
-      }),
-      prisma.podcast.findMany({
-        orderBy: { publishedAt: "desc" },
-        take: 3,
-      }),
-      prisma.user.count(),
-      prisma.submission.count(),
-      prisma.event.count(),
-    ]);
+  let user = null;
+  let events: Awaited<ReturnType<typeof prisma.event.findMany>> = [];
+  let podcasts: Awaited<ReturnType<typeof prisma.podcast.findMany>> = [];
+  let userCount = 0;
+  let submissionCount = 0;
+  let eventCount = 0;
+
+  try {
+    [user, events, podcasts, userCount, submissionCount, eventCount] =
+      await Promise.all([
+        getCurrentUser(),
+        prisma.event.findMany({
+          where: { date: { gte: new Date() } },
+          orderBy: { date: "asc" },
+          take: 3,
+        }),
+        prisma.podcast.findMany({
+          orderBy: { publishedAt: "desc" },
+          take: 3,
+        }),
+        prisma.user.count(),
+        prisma.submission.count(),
+        prisma.event.count(),
+      ]);
+  } catch (error) {
+    console.error("Failed to load landing page data", error);
+  }
 
   // Dynamic stats – replace placeholders when we have data
   const stats: CommunityStat[] = [
