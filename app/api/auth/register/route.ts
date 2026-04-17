@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
+import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/db";
 import { hashPassword, createToken, setSession } from "@/lib/auth";
-import { ensureDomainProgressForUser } from "@/lib/domain-progress";
 import { registerSchema } from "@/lib/validations/auth";
 
 export async function POST(request: Request) {
@@ -25,15 +25,27 @@ export async function POST(request: Request) {
       );
     }
     const hashed = await hashPassword(password);
-    const user = await prisma.user.create({
-      data: {
-        name: name.trim(),
-        email: email.toLowerCase(),
-        password: hashed,
-        selectedDomain,
-      },
+    const user = await prisma.$transaction(async (tx) => {
+      const createdUser = await tx.user.create({
+        data: {
+          name: name.trim(),
+          email: email.toLowerCase(),
+          password: hashed,
+          selectedDomain,
+        },
+      });
+
+      const domains: Array<"SE" | "ML" | "AI"> = ["SE", "ML", "AI"];
+      for (const domain of domains) {
+        await tx.domainProgress.upsert({
+          where: { userId_domain: { userId: createdUser.id, domain } },
+          update: {},
+          create: { userId: createdUser.id, domain },
+        });
+      }
+
+      return createdUser;
     });
-    await ensureDomainProgressForUser(user.id);
     const token = createToken({
       userId: user.id,
       email: user.email,
@@ -51,6 +63,26 @@ export async function POST(request: Request) {
     });
   } catch (e) {
     console.error(e);
+    if (e instanceof Prisma.PrismaClientInitializationError) {
+      return NextResponse.json(
+        { error: "Database connection failed. Check DATABASE_URL in Vercel env." },
+        { status: 500 }
+      );
+    }
+    if (e instanceof Prisma.PrismaClientKnownRequestError) {
+      if (e.code === "P2002") {
+        return NextResponse.json(
+          { error: "An account with this email already exists" },
+          { status: 400 }
+        );
+      }
+      if (e.code === "P2021" || e.code === "P2022") {
+        return NextResponse.json(
+          { error: "Database schema is outdated. Please run production migrations." },
+          { status: 500 }
+        );
+      }
+    }
     return NextResponse.json(
       { error: "Registration failed" },
       { status: 500 }

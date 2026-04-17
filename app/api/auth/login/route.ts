@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/db";
 import { verifyPassword, createToken, setSession } from "@/lib/auth";
 import { loginSchema } from "@/lib/validations/auth";
@@ -49,6 +50,20 @@ export async function POST(request: Request) {
     });
   } catch (e) {
     console.error(e);
+    if (e instanceof Prisma.PrismaClientInitializationError) {
+      return NextResponse.json(
+        { error: "Database connection failed. Check DATABASE_URL in Vercel env." },
+        { status: 500 }
+      );
+    }
+    if (e instanceof Prisma.PrismaClientKnownRequestError) {
+      if (e.code === "P2021" || e.code === "P2022") {
+        return NextResponse.json(
+          { error: "Database schema is outdated. Please run production migrations." },
+          { status: 500 }
+        );
+      }
+    }
     return NextResponse.json(
       { error: "Login failed" },
       { status: 500 }
