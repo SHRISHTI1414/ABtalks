@@ -35,7 +35,9 @@ type JwtPayload = {
 };
 
 export function createToken(payload: JwtPayload): string {
-  return jwt.sign(payload, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN });
+  return jwt.sign(payload, JWT_SECRET, {
+    expiresIn: JWT_EXPIRES_IN as jwt.SignOptions["expiresIn"],
+  });
 }
 
 export function verifyToken(token: string): JwtPayload | null {

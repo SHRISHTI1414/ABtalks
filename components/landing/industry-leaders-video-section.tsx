@@ -1,6 +1,5 @@
 import { Suspense } from "react";
 import { getLatestYouTubeVideos } from "@/lib/youtube";
-import type { YouTubeVideo } from "@/lib/youtube";
 import { IndustryLeadersVideoGrid } from "./industry-leaders-video-grid";
 import { IndustryLeadersVideoSkeleton } from "./industry-leaders-video-skeleton";
 

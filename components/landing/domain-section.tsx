@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Code2, Brain, Sparkles } from "lucide-react";
+import { Code2, Brain, Sparkles, type LucideIcon } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -10,7 +10,7 @@ import {
 import type { DomainCard } from "@/lib/landing-content";
 import { cn } from "@/lib/utils";
 
-const icons = [Code2, Brain, Sparkles] as const;
+const icons: LucideIcon[] = [Code2, Brain, Sparkles];
 
 const container = {
   hidden: { opacity: 0 },
@@ -63,7 +63,7 @@ export function DomainSection({ domains }: { domains: DomainCard[] }) {
           className="mt-14 grid gap-6 md:grid-cols-3"
         >
           {domains.map((domain, index) => {
-            const Icon = icons[index % icons.length];
+            const Icon = icons[index % icons.length]!;
             return (
               <motion.div key={domain.id} variants={cardItem}>
                 <Card
