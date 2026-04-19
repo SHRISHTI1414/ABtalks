@@ -13,6 +13,8 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { apiFetch } from "@/lib/api-client";
+import type { LogoutSuccessData } from "@/lib/types/api";
 
 const items = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
@@ -58,7 +60,7 @@ export function Sidebar() {
             variant="ghost"
             className="w-full justify-start gap-3 text-muted-foreground hover:text-foreground"
             onClick={async () => {
-              await fetch("/api/auth/logout", { method: "POST" });
+              await apiFetch<LogoutSuccessData>("/api/auth/logout", { method: "POST" });
               window.location.href = "/login";
             }}
           >

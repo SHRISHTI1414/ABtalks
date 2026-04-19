@@ -1,0 +1,30 @@
+# ABTalks — Cursor / AI rules
+
+## General
+- Prefer small, focused changes. Match existing patterns in the repo unless migrating intentionally.
+- Do not commit secrets, real `.env` values, or production URLs/credentials.
+
+## TypeScript
+- `tsconfig.json` uses strict mode, `noImplicitAny`, and `noUncheckedIndexedAccess`. Fix types explicitly; avoid `@ts-ignore` unless justified with a comment.
+- Prefer `unknown` over `any`. Use Prisma-generated types and Zod inference where possible.
+
+## API & validation
+- Put request/response validation schemas in `lib/validations/` (Zod). Co-locate domain-specific schemas in named files (e.g. `auth.ts`).
+- API route handlers should validate input with Zod before calling Prisma.
+- Use shared auth helpers from `lib/auth.ts` (`getSession`, `getCurrentUser`, `requireRole` / `requireAdmin`) instead of duplicating checks.
+
+### DOMAIN-SPECIFIC RULES — Auth routes
+
+Auth routes have special handling:
+
+- **POST /api/auth/login** — public, no `requireRole`; validate credentials with Zod.
+- **POST /api/auth/register** — public, no `requireRole`; validate inputs with Zod.
+- **POST /api/auth/logout** — public, no `requireRole`; idempotent; always returns success (`jsonOk`) so users can always sign out (including expired/corrupted sessions).
+- **All other routes:** use `requireRole` with explicit allowed roles.
+
+## Database
+- Use the singleton `PrismaClient` from `lib/db.ts` only. No ad-hoc `new PrismaClient()` in app code.
+
+## Style
+- Run `npm run lint` and `npm run format` before finishing substantive edits.
+- Use Prettier defaults unless the repo config says otherwise.

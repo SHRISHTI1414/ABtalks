@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken";
 import { cookies } from "next/headers";
 import bcrypt from "bcryptjs";
+import { NextResponse } from "next/server";
 import { prisma } from "./db";
 
 const JWT_SECRET = process.env.JWT_SECRET || "default-secret-change-me";
@@ -87,4 +88,40 @@ export async function getCurrentUser() {
       role: true,
     },
   });
+}
+
+export type AuthRole = JwtPayload["role"];
+
+/**
+ * For Route Handlers: ensures the session exists and role is allowed.
+ * On failure, return `result.response` as the HTTP response.
+ */
+export async function requireRole(
+  allowedRoles: readonly AuthRole[]
+): Promise<
+  | { ok: true; session: JwtPayload }
+  | { ok: false; response: NextResponse }
+> {
+  const session = await getSession();
+  if (!session) {
+    return {
+      ok: false,
+      response: NextResponse.json(
+        { ok: false, error: "Unauthorized" },
+        { status: 401 }
+      ),
+    };
+  }
+  if (!allowedRoles.includes(session.role)) {
+    return {
+      ok: false,
+      response: NextResponse.json({ ok: false, error: "Forbidden" }, { status: 403 }),
+    };
+  }
+  return { ok: true, session };
+}
+
+/** Shorthand for admin-only API routes. */
+export async function requireAdmin() {
+  return requireRole(["ADMIN"] as const);
 }

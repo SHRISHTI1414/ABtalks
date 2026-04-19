@@ -14,6 +14,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { apiFetch } from "@/lib/api-client";
+import type { RegisterSuccessData } from "@/lib/types/api";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -29,14 +31,13 @@ export default function RegisterPage() {
     setError("");
     setLoading(true);
     try {
-      const res = await fetch("/api/auth/register", {
+      const result = await apiFetch<RegisterSuccessData>("/api/auth/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name, email, password, selectedDomain }),
       });
-      const data = await res.json();
-      if (!res.ok) {
-        setError(data.error || "Registration failed");
+      if (!result.ok) {
+        setError(result.error);
         return;
       }
       router.push("/dashboard");
