@@ -1,23 +1,19 @@
 import { prisma } from "@/lib/db";
 import { getCurrentUser } from "@/lib/auth";
+import { HeroSection } from "@/components/landing/hero-section";
 import {
   communityIdentityBlocks,
   domainCards,
-  outcomeItems,
   timelinePhases,
 } from "@/lib/landing-content";
 import { formatDateForLanding } from "@/lib/utils";
 import {
   LandingNav,
-  HeroSection,
   CommunityIdentitySection,
   SixtyDayStructureSection,
   DomainSection,
-  EventsWebinarsSection,
-  PodcastSection,
-  IndustryLeadersVideoSection,
+  LearningSection,
   CommunitySection,
-  OutcomeSection,
   FinalCtaSection,
   LandingFooter,
 } from "@/components/landing";
@@ -54,7 +50,6 @@ export default async function HomePage() {
     console.error("Failed to load landing page data", error);
   }
 
-  // Dynamic stats – replace placeholders when we have data
   const stats: CommunityStat[] = [
     { id: "members", value: userCount, label: "Active members" },
     { id: "challenges", value: submissionCount, label: "Challenges completed" },
@@ -62,44 +57,45 @@ export default async function HomePage() {
   ];
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-50">
+    <div className="min-h-screen overflow-x-hidden bg-background text-foreground">
       <LandingNav user={user} />
 
-      <main>
+      <main className="overflow-x-hidden">
         <HeroSection />
-        <CommunityIdentitySection blocks={communityIdentityBlocks} />
-        <SixtyDayStructureSection phases={timelinePhases} />
-        <DomainSection domains={domainCards} />
-        <EventsWebinarsSection
-          events={events.map((e) => ({
-            id: e.id,
-            title: e.title,
-            description: e.description,
-            dateFormatted: formatDateForLanding(e.date),
-            time: e.time,
-            location: e.location,
-            guestName: e.guestName,
-            guestBio: e.guestBio,
-            guestImage: e.guestImage,
-            outcomes: e.outcomes,
-          }))}
-        />
-        <PodcastSection
-          podcasts={podcasts.map((p) => ({
-            id: p.id,
-            title: p.title,
-            description: p.description,
-            guestName: p.guestName,
-            episodeNumber: p.episodeNumber,
-            publishedAtFormatted: formatDateForLanding(p.publishedAt),
-            youtubeUrl: p.youtubeUrl,
-            spotifyUrl: p.spotifyUrl,
-          }))}
-        />
-        <IndustryLeadersVideoSection />
-        <CommunitySection stats={stats} />
-        <OutcomeSection outcomes={outcomeItems} />
-        <FinalCtaSection />
+
+        <div className="mx-auto w-full max-w-6xl px-6">
+          <div className="flex flex-col gap-10">
+            <CommunityIdentitySection blocks={communityIdentityBlocks} />
+            <SixtyDayStructureSection phases={timelinePhases} />
+            <DomainSection domains={domainCards} />
+            <CommunitySection stats={stats} />
+            <LearningSection
+              events={events.map((e: (typeof events)[number]) => ({
+                id: e.id,
+                title: e.title,
+                description: e.description,
+                dateFormatted: formatDateForLanding(e.date),
+                time: e.time,
+                location: e.location,
+                guestName: e.guestName,
+                guestBio: e.guestBio,
+                guestImage: e.guestImage,
+                outcomes: e.outcomes,
+              }))}
+              podcasts={podcasts.map((p: (typeof podcasts)[number]) => ({
+                id: p.id,
+                title: p.title,
+                description: p.description,
+                guestName: p.guestName,
+                episodeNumber: p.episodeNumber,
+                publishedAtFormatted: formatDateForLanding(p.publishedAt),
+                youtubeUrl: p.youtubeUrl,
+                spotifyUrl: p.spotifyUrl,
+              }))}
+            />
+            <FinalCtaSection />
+          </div>
+        </div>
       </main>
 
       <LandingFooter />

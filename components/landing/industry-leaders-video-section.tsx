@@ -1,6 +1,5 @@
 import { Suspense } from "react";
 import { getLatestYouTubeVideos } from "@/lib/youtube";
-import type { YouTubeVideo } from "@/lib/youtube";
 import { IndustryLeadersVideoGrid } from "./industry-leaders-video-grid";
 import { IndustryLeadersVideoSkeleton } from "./industry-leaders-video-skeleton";
 
@@ -12,40 +11,37 @@ async function IndustryLeadersVideoContent() {
   return (
     <section
       id="industry-videos"
-      className="border-t border-slate-800/60 px-4 py-20 md:py-24"
+      className="px-4 py-16 md:py-20"
       aria-labelledby="industry-videos-heading"
     >
       <div className="mx-auto max-w-6xl">
-        {/* Trust badge line */}
-        <p className="text-center text-sm text-slate-500">
-          Featuring voices from companies like Google and other leading tech
-          firms.
+        <p className="text-center text-sm text-muted-foreground">
+          Featuring voices from companies like Google and other leading tech firms.
         </p>
 
         <h2
           id="industry-videos-heading"
-          className="mt-8 text-center text-3xl font-bold tracking-tight text-slate-50 sm:text-4xl"
+          className="mt-6 text-center text-2xl font-semibold tracking-tight text-foreground sm:text-3xl"
         >
-          Learn Directly From Industry Leaders.
+          Learn from industry leaders
         </h2>
-        <p className="mx-auto mt-4 max-w-2xl text-center text-slate-400">
-          Real conversations with engineers and leaders from global tech
-          companies.
+        <p className="mx-auto mt-3 max-w-2xl text-center text-sm text-muted-foreground">
+          Real conversations with engineers and leaders from global tech companies.
         </p>
 
         {videos.length === 0 ? (
-          <div className="mt-14 rounded-2xl border border-slate-800/80 bg-slate-900/40 px-6 py-16 text-center">
-            <p className="text-slate-400">
+          <div className="mt-10 rounded-2xl border border-border bg-card/60 px-6 py-16 text-center backdrop-blur-sm">
+            <p className="text-sm text-muted-foreground">
               No videos available right now. Subscribe to stay updated.
             </p>
             <a
               href={YOUTUBE_CHANNEL_URL}
               target="_blank"
               rel="noopener noreferrer"
-              className="mt-4 inline-flex items-center gap-2 rounded-xl bg-[#ff0000] px-5 py-2.5 text-sm font-medium text-white transition hover:bg-[#cc0000]"
+              className="mt-4 inline-flex items-center gap-2 rounded-xl border border-border bg-card px-5 py-2.5 text-sm font-medium text-foreground shadow-sm transition-all duration-200 hover:scale-[1.02] hover:bg-accent"
             >
-              <YouTubeIcon className="h-5 w-5" />
-              Subscribe to ABTalks on YouTube
+              <YouTubeIcon className="h-5 w-5 text-primary" />
+              Subscribe on YouTube
             </a>
           </div>
         ) : (
@@ -56,10 +52,10 @@ async function IndustryLeadersVideoContent() {
                 href={YOUTUBE_CHANNEL_URL}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 rounded-xl bg-[#ff0000] px-6 py-3 text-sm font-semibold text-white shadow-lg transition hover:bg-[#cc0000] hover:shadow-xl"
+                className="inline-flex items-center gap-2 rounded-xl border border-border bg-card px-6 py-3 text-sm font-semibold text-foreground shadow-sm transition-all duration-200 hover:scale-[1.02] hover:bg-accent"
               >
-                <YouTubeIcon className="h-5 w-5" />
-                Subscribe to ABTalks on YouTube
+                <YouTubeIcon className="h-5 w-5 text-primary" />
+                Subscribe on YouTube
               </a>
             </div>
           </>

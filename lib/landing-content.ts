@@ -42,28 +42,28 @@ export const communityIdentityBlocks: CommunityIdentityBlock[] = [
     id: "structured",
     title: "Structured Growth",
     description:
-      "A clear 60-day roadmap that builds day by day—no guesswork, no overwhelm. Every step is designed to move you from foundations to industry-level readiness.",
+      "A 60-day roadmap from foundations to interview-ready—one focused step at a time.",
     icon: "roadmap",
   },
   {
     id: "industry",
     title: "Industry Exposure",
     description:
-      "Webinars and guest sessions with professionals who ship real products. Learn from people who've walked the path and hear what hiring managers actually look for.",
+      "Sessions with people who ship real products—what hiring teams actually care about.",
     icon: "mic",
   },
   {
     id: "conversations",
     title: "Real Conversations",
     description:
-      "Our podcast brings you honest talks with builders—engineers, researchers, and leaders. No fluff; just how they think, build, and grow.",
+      "Podcasts with builders: how they think, build, and grow—no hype, no filler.",
     icon: "podcast",
   },
   {
     id: "network",
     title: "Network & Accountability",
     description:
-      "A community ecosystem where progress is shared, questions get real answers, and accountability comes from peers who are on the same journey.",
+      "Peers on the same journey: shared progress, real answers, gentle accountability.",
     icon: "users",
   },
 ];
@@ -73,25 +73,25 @@ export const timelinePhases: TimelinePhase[] = [
     id: "foundations",
     day: 1,
     label: "Foundations",
-    description: "Core concepts, patterns, and problem-solving habits.",
+    description: "",
   },
   {
     id: "applied",
     day: 20,
-    label: "Applied Thinking",
-    description: "Connecting theory to practice with structured challenges.",
+    label: "Applied",
+    description: "",
   },
   {
     id: "realworld",
     day: 40,
-    label: "Real-World Problems",
-    description: "Scenarios that mirror actual industry problems and systems.",
+    label: "Real-world",
+    description: "",
   },
   {
     id: "readiness",
     day: 60,
-    label: "Industry-Level Readiness",
-    description: "Confidence to discuss, design, and deliver at interview and portfolio level.",
+    label: "Readiness",
+    description: "",
   },
 ];
 
@@ -100,25 +100,25 @@ export const domainCards: DomainCard[] = [
     id: "se",
     title: "Software Engineering",
     missionDescription:
-      "Data structures, algorithms, systems thinking, and production patterns. Backend-heavy challenges and architecture discussions that mirror real product work.",
+      "DSA, systems thinking, and patterns that match real product work and interviews.",
     skillsOutcome: ["DSA fluency", "System design basics", "Clean code habits"],
-    industryAlignment: "Aligned with SWE and backend roles at product companies.",
+    industryAlignment: "SWE and backend roles at product companies.",
   },
   {
     id: "ml",
     title: "Machine Learning",
     missionDescription:
-      "From regression and trees to model evaluation and deployment. Build intuition around data, features, and metrics so you can talk about ML like an engineer.",
-    skillsOutcome: ["ML pipeline thinking", "Metrics & evaluation", "Deployment awareness"],
-    industryAlignment: "Maps to ML engineer and applied scientist roles.",
+      "Models, metrics, and pipelines—speak ML like an engineer, not a slide deck.",
+    skillsOutcome: ["Pipeline thinking", "Metrics & evaluation", "Deployment awareness"],
+    industryAlignment: "ML engineer and applied scientist paths.",
   },
   {
     id: "ai",
     title: "Artificial Intelligence",
     missionDescription:
-      "Deep learning, sequence models, and modern transformer-based systems. Translate concepts into how modern AI products are built and shipped.",
-    skillsOutcome: ["DL fundamentals", "Transformer literacy", "AI product mindset"],
-    industryAlignment: "Relevant for AI/ML and research-oriented engineering roles.",
+      "Deep learning and modern AI—how today’s products are built and shipped.",
+    skillsOutcome: ["DL fundamentals", "Transformers", "AI product mindset"],
+    industryAlignment: "AI/ML and research-minded engineering roles.",
   },
 ];
 
@@ -133,24 +133,24 @@ export const outcomeItems: OutcomeItem[] = [
     id: "thinking",
     title: "Structured Thinking",
     description:
-      "You learn to break down problems, prioritize, and communicate your approach—the same skills that matter in interviews and on teams.",
+      "Break down problems, prioritize, and explain your approach—the skills interviews reward.",
   },
   {
     id: "confidence",
     title: "Interview-Ready Confidence",
     description:
-      "Practice with industry-aligned challenges and conversations so you can walk into discussions about systems, ML, and AI with clarity.",
+      "Practice with industry-aligned challenges so systems and ML discussions feel familiar.",
   },
   {
     id: "portfolio",
     title: "Portfolio-Level Skill",
     description:
-      "Projects and problem-solving evidence that demonstrate what you can do, not just what you've studied.",
+      "Evidence of how you solve problems—not just what courses you’ve listed.",
   },
   {
     id: "mindset",
     title: "Industry Mindset",
     description:
-      "An understanding of how real teams ship: trade-offs, collaboration, and continuous learning as the norm.",
+      "How real teams ship: trade-offs, collaboration, and learning as the default.",
   },
 ];

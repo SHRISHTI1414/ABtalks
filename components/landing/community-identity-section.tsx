@@ -1,18 +1,8 @@
 "use client";
 
 import { motion } from "framer-motion";
-import {
-  Map,
-  Mic2,
-  Podcast,
-  Users,
-  type LucideIcon,
-} from "lucide-react";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-} from "@/components/ui/card";
+import { Map, Mic2, Podcast, Users, type LucideIcon } from "lucide-react";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import type { CommunityIdentityBlock } from "@/lib/landing-content";
 import { cn } from "@/lib/utils";
 
@@ -27,12 +17,12 @@ const container = {
   hidden: { opacity: 0 },
   show: {
     opacity: 1,
-    transition: { staggerChildren: 0.08 },
+    transition: { staggerChildren: 0.06 },
   },
 };
 
 const item = {
-  hidden: { opacity: 0, y: 16 },
+  hidden: { opacity: 0, y: 14 },
   show: { opacity: 1, y: 0 },
 };
 
@@ -44,27 +34,37 @@ export function CommunityIdentitySection({
   return (
     <section
       id="identity"
-      className="border-t border-slate-800/60 px-4 py-20 md:py-24"
+      className="py-16 md:py-20"
       aria-labelledby="identity-heading"
     >
-      <div className="mx-auto max-w-6xl">
+      <div className="w-full">
         <motion.h2
           id="identity-heading"
-          initial={{ opacity: 0, y: 12 }}
+          initial={{ opacity: 0, y: 10 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-80px" }}
-          transition={{ duration: 0.4 }}
-          className="text-center text-3xl font-bold tracking-tight text-slate-50 sm:text-4xl"
+          transition={{ duration: 0.35 }}
+          className="text-center text-2xl font-semibold leading-tight tracking-tight text-foreground md:text-3xl"
         >
-          This Is Not Just Another Coding Platform.
+          Why ABTalks Works
         </motion.h2>
+
+        <motion.p
+          initial={{ opacity: 0, y: 6 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.35, delay: 0.05 }}
+          className="mx-auto mt-3 max-w-lg text-center text-sm leading-relaxed text-slate-500 dark:text-slate-400 md:text-base"
+        >
+          Structure, exposure, honest talks, and a community that keeps you moving.
+        </motion.p>
 
         <motion.div
           variants={container}
           initial="hidden"
           whileInView="show"
           viewport={{ once: true, margin: "-60px" }}
-          className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-4"
+          className="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4"
         >
           {blocks.map((block) => {
             const Icon = iconMap[block.icon];
@@ -72,20 +72,20 @@ export function CommunityIdentitySection({
               <motion.div key={block.id} variants={item}>
                 <Card
                   className={cn(
-                    "h-full border-slate-800/80 bg-slate-900/40 transition-all duration-300",
-                    "rounded-2xl hover:border-slate-700/80 hover:bg-slate-900/60 hover:shadow-xl hover:shadow-slate-950/50"
+                    "h-full rounded-2xl border-0 bg-card shadow-md shadow-black/[0.04] backdrop-blur-sm transition-shadow duration-200",
+                    "hover:shadow-lg hover:shadow-black/[0.06] dark:shadow-black/20"
                   )}
                 >
-                  <CardHeader>
-                    <div className="mb-2 flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500/20 to-blue-500/20 text-violet-300">
+                  <CardHeader className="pb-2">
+                    <div className="mb-2 flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary">
                       <Icon className="h-5 w-5" />
                     </div>
-                    <h3 className="text-lg font-semibold text-slate-100">
+                    <h3 className="text-base font-semibold leading-tight tracking-tight text-card-foreground">
                       {block.title}
                     </h3>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-sm leading-relaxed text-slate-400">
+                    <p className="text-sm leading-snug text-slate-500 dark:text-slate-400 md:text-[0.9375rem]">
                       {block.description}
                     </p>
                   </CardContent>

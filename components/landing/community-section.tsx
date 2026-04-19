@@ -1,111 +1,69 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Users, Target, MessageCircle, Share2 } from "lucide-react";
 import type { CommunityStat } from "@/lib/landing-content";
-
-const highlights = [
-  {
-    icon: Users,
-    title: "Accountability",
-    description: "Stay on track with peers who share the same goals and deadlines.",
-  },
-  {
-    icon: Target,
-    title: "Shared progress",
-    description: "Celebrate wins and learn from others' approaches to the same challenges.",
-  },
-  {
-    icon: MessageCircle,
-    title: "Peer network",
-    description: "Connect with developers at different stages—everyone has something to give.",
-  },
-  {
-    icon: Share2,
-    title: "Real discussions",
-    description: "No generic advice; real code reviews, system design talks, and career insights.",
-  },
-];
 
 const container = {
   hidden: { opacity: 0 },
   show: {
     opacity: 1,
-    transition: { staggerChildren: 0.08 },
+    transition: { staggerChildren: 0.06 },
   },
 };
 
 const statItem = {
-  hidden: { opacity: 0, scale: 0.96 },
-  show: { opacity: 1, scale: 1 },
+  hidden: { opacity: 0, y: 8 },
+  show: { opacity: 1, y: 0 },
 };
 
 export function CommunitySection({ stats }: { stats: CommunityStat[] }) {
   return (
     <section
       id="community"
-      className="border-t border-slate-800/60 px-4 py-20 md:py-24"
+      className="py-16 md:py-20"
       aria-labelledby="community-heading"
     >
-      <div className="mx-auto max-w-6xl">
+      <div className="w-full">
         <motion.h2
           id="community-heading"
-          initial={{ opacity: 0, y: 12 }}
+          initial={{ opacity: 0, y: 10 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-80px" }}
-          transition={{ duration: 0.4 }}
-          className="text-center text-3xl font-bold tracking-tight text-slate-50 sm:text-4xl"
+          transition={{ duration: 0.35 }}
+          className="text-center text-2xl font-semibold leading-tight tracking-tight text-foreground md:text-3xl"
         >
-          You Don&apos;t Grow Alone Here.
+          Community
         </motion.h2>
 
         <motion.p
-          initial={{ opacity: 0, y: 8 }}
+          initial={{ opacity: 0, y: 6 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.4, delay: 0.05 }}
-          className="mx-auto mt-4 max-w-2xl text-center text-slate-400"
+          transition={{ duration: 0.35, delay: 0.05 }}
+          className="mx-auto mt-3 max-w-md text-center text-sm text-slate-500 dark:text-slate-400 md:text-base"
         >
-          Accountability, shared progress, and a network that pushes you forward.
+          Numbers from the ABTalks platform—growing with every cohort.
         </motion.p>
 
-        <div className="mt-14 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
-          {highlights.map((item, index) => (
-            <motion.div
-              key={item.title}
-              initial={{ opacity: 0, y: 16 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.4, delay: index * 0.06 }}
-              className="text-center"
-            >
-              <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-slate-800/80 text-violet-400">
-                <item.icon className="h-6 w-6" />
-              </div>
-              <h3 className="mt-3 font-semibold text-slate-100">{item.title}</h3>
-              <p className="mt-1 text-sm text-slate-400">{item.description}</p>
-            </motion.div>
-          ))}
-        </div>
-
-        {/* Stats grid - dynamic ready */}
         <motion.div
           variants={container}
           initial="hidden"
           whileInView="show"
           viewport={{ once: true, margin: "-40px" }}
-          className="mt-16 grid grid-cols-3 gap-4 sm:gap-6"
+          className="mt-10 grid min-w-0 grid-cols-3 gap-2 sm:gap-5"
         >
           {stats.map((stat) => (
             <motion.div
               key={stat.id}
               variants={statItem}
-              className="rounded-2xl border border-slate-800/80 bg-slate-900/40 px-6 py-8 text-center transition-colors hover:border-slate-700/80 hover:bg-slate-900/60"
+              className="rounded-2xl border-0 bg-card px-4 py-6 text-center shadow-md shadow-black/[0.04] backdrop-blur-sm transition-shadow duration-200 hover:shadow-lg dark:shadow-black/25 sm:px-6 sm:py-8"
             >
-              <p className="text-3xl font-bold text-violet-400 sm:text-4xl">
+              <p className="text-2xl font-semibold leading-tight tracking-tight text-primary sm:text-3xl">
                 {stat.value}
               </p>
-              <p className="mt-1 text-sm text-slate-400">{stat.label}</p>
+              <p className="mt-1 text-xs text-slate-500 dark:text-slate-400 sm:text-sm">
+                {stat.label}
+              </p>
             </motion.div>
           ))}
         </motion.div>

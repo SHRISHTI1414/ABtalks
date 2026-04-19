@@ -2,11 +2,7 @@
 
 import { motion } from "framer-motion";
 import { Code2, Brain, Sparkles } from "lucide-react";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import type { DomainCard } from "@/lib/landing-content";
 import { cn } from "@/lib/utils";
 
@@ -16,12 +12,12 @@ const container = {
   hidden: { opacity: 0 },
   show: {
     opacity: 1,
-    transition: { staggerChildren: 0.1 },
+    transition: { staggerChildren: 0.06 },
   },
 };
 
 const cardItem = {
-  hidden: { opacity: 0, y: 20 },
+  hidden: { opacity: 0, y: 14 },
   show: { opacity: 1, y: 0 },
 };
 
@@ -29,77 +25,72 @@ export function DomainSection({ domains }: { domains: DomainCard[] }) {
   return (
     <section
       id="domains"
-      className="border-t border-slate-800/60 px-4 py-20 md:py-24"
+      className="py-16 md:py-20"
       aria-labelledby="domains-heading"
     >
-      <div className="mx-auto max-w-6xl">
+      <div className="w-full">
         <motion.h2
           id="domains-heading"
-          initial={{ opacity: 0, y: 12 }}
+          initial={{ opacity: 0, y: 10 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-80px" }}
-          transition={{ duration: 0.4 }}
-          className="text-center text-3xl font-bold tracking-tight text-slate-50 sm:text-4xl"
+          transition={{ duration: 0.35 }}
+          className="text-center text-2xl font-semibold leading-tight tracking-tight text-foreground md:text-3xl"
         >
-          Domains We Focus On
+          Domains
         </motion.h2>
 
         <motion.p
-          initial={{ opacity: 0, y: 8 }}
+          initial={{ opacity: 0, y: 6 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.4, delay: 0.05 }}
-          className="mx-auto mt-4 max-w-2xl text-center text-slate-400"
+          transition={{ duration: 0.35, delay: 0.05 }}
+          className="mx-auto mt-3 max-w-lg text-center text-sm text-slate-500 dark:text-slate-400 md:text-base"
         >
-          Software Engineering, Machine Learning, and AI—aligned with real
-          industry roles.
+          Software, ML, and AI—aligned with how teams actually hire.
         </motion.p>
 
         <motion.div
           variants={container}
           initial="hidden"
           whileInView="show"
-          viewport={{ once: true, margin: "-60px" }}
-          className="mt-14 grid gap-6 md:grid-cols-3"
+          viewport={{ once: true, margin: "-50px" }}
+          className="mt-10 grid grid-cols-1 gap-4 md:grid-cols-3"
         >
           {domains.map((domain, index) => {
             const Icon = icons[index % icons.length];
+            const bullets = domain.skillsOutcome.slice(0, 3);
             return (
               <motion.div key={domain.id} variants={cardItem}>
                 <Card
                   className={cn(
-                    "h-full border-slate-800/80 bg-slate-900/40 transition-all duration-300",
-                    "rounded-2xl hover:border-slate-700/80 hover:bg-slate-900/60 hover:shadow-xl hover:shadow-violet-950/20 hover:-translate-y-0.5"
+                    "h-full rounded-2xl border-0 bg-card shadow-md shadow-black/[0.04] backdrop-blur-sm transition-shadow duration-200",
+                    "hover:shadow-lg dark:shadow-black/20"
                   )}
                 >
-                  <CardHeader>
-                    <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500/20 to-blue-500/20 text-violet-300">
+                  <CardHeader className="pb-2">
+                    <div className="mb-2 flex h-11 w-11 items-center justify-center rounded-xl bg-primary/10 text-primary">
                       <Icon className="h-6 w-6" />
                     </div>
-                    <h3 className="text-xl font-semibold text-slate-100">
+                    <h3 className="text-lg font-semibold leading-tight tracking-tight text-card-foreground">
                       {domain.title}
                     </h3>
-                    <p className="text-sm leading-relaxed text-slate-400">
+                    <p className="text-sm leading-snug text-slate-500 dark:text-slate-400 md:text-[0.9375rem]">
                       {domain.missionDescription}
                     </p>
                   </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div>
-                      <p className="text-xs font-medium uppercase tracking-wider text-slate-500">
-                        Skills outcome
-                      </p>
-                      <ul className="mt-1 flex flex-wrap gap-2">
-                        {domain.skillsOutcome.map((skill) => (
-                          <li
-                            key={skill}
-                            className="rounded-lg bg-slate-800/80 px-2.5 py-1 text-xs text-slate-300"
-                          >
-                            {skill}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                    <p className="text-xs text-slate-500">
+                  <CardContent className="space-y-3">
+                    <ul className="space-y-1.5 text-sm text-slate-500 dark:text-slate-400">
+                      {bullets.map((skill) => (
+                        <li key={skill} className="flex gap-2">
+                          <span className="text-primary" aria-hidden>
+                            ·
+                          </span>
+                          <span>{skill}</span>
+                        </li>
+                      ))}
+                    </ul>
+                    <p className="text-xs leading-relaxed text-slate-500 dark:text-slate-400">
                       {domain.industryAlignment}
                     </p>
                   </CardContent>

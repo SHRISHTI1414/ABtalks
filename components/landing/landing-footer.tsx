@@ -10,77 +10,73 @@ const socialLinks = [
 
 export function LandingFooter() {
   return (
-    <footer
-      className="border-t border-slate-800/60 bg-slate-950/80 px-4 py-12 md:py-16"
-      role="contentinfo"
-    >
-      <div className="mx-auto max-w-6xl">
-        <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-4">
-          {/* Brand & mission */}
+    <footer className="bg-card/30 py-16 backdrop-blur-sm md:py-20" role="contentinfo">
+      <div className="mx-auto w-full max-w-6xl px-6">
+        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
           <div className="lg:col-span-2">
-            <Link href="/" className="inline-flex items-center gap-2">
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-violet-500 to-blue-600 text-sm font-bold text-white">
+            <Link
+              href="/"
+              className="inline-flex items-center gap-2 transition-opacity duration-200 hover:opacity-90"
+            >
+              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-orange-500 to-amber-600 text-sm font-bold text-white shadow-sm shadow-orange-500/20">
                 AB
               </div>
-              <span className="font-semibold text-slate-100">ABTalks</span>
+              <span className="bg-gradient-to-r from-orange-600 to-amber-600 bg-clip-text text-base font-semibold tracking-tight text-transparent md:text-lg">
+                ABTalks
+              </span>
             </Link>
-            <p className="mt-3 max-w-md text-sm text-slate-400">
-              A community of like-minded developers. We prepare students for
-              real industry roles through structured training, webinars,
-              podcasts, and a 60-day challenge—focused on discipline, clarity,
-              and growth.
+            <p className="mt-3 max-w-md text-sm leading-relaxed text-slate-600 dark:text-slate-400">
+              Structured training, live sessions, and a 60-day challenge—built for developers preparing for real roles.
             </p>
           </div>
 
-          {/* About & contact */}
           <div>
-            <h3 className="text-sm font-semibold text-slate-200">About</h3>
-            <ul className="mt-3 space-y-2 text-sm text-slate-400">
+            <h3 className="text-sm font-semibold text-foreground">About</h3>
+            <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
               <li>
-                <Link href="/about" className="transition hover:text-slate-200">
+                <Link href="/about" className="transition-colors duration-200 hover:text-foreground">
                   About ABTalks
                 </Link>
               </li>
               <li>
-                <Link href="/contact" className="transition hover:text-slate-200">
+                <Link href="/contact" className="transition-colors duration-200 hover:text-foreground">
                   Contact
                 </Link>
               </li>
               <li>
-                <Link href="/terms" className="transition hover:text-slate-200">
+                <Link href="/terms" className="transition-colors duration-200 hover:text-foreground">
                   Terms
                 </Link>
               </li>
               <li>
-                <Link href="/privacy" className="transition hover:text-slate-200">
+                <Link href="/privacy" className="transition-colors duration-200 hover:text-foreground">
                   Privacy
                 </Link>
               </li>
             </ul>
           </div>
 
-          {/* Social */}
           <div>
-            <h3 className="text-sm font-semibold text-slate-200">Connect</h3>
-            <ul className="mt-3 space-y-2 text-sm text-slate-400">
+            <h3 className="text-sm font-semibold text-foreground">Connect</h3>
+            <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
               {socialLinks.map((link) => (
                 <li key={link.label}>
                   <a
                     href={link.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="transition hover:text-slate-200"
+                    className="transition-colors duration-200 hover:text-foreground"
                   >
                     {link.label}
                   </a>
                 </li>
               ))}
             </ul>
-            <p className="mt-4 text-xs text-slate-500">
+            <p className="mt-4 text-xs text-muted-foreground">
               Contact:{" "}
               <a
                 href="mailto:hello@abtalks.com"
-                className="font-medium text-slate-400 hover:underline"
+                className="font-medium underline-offset-4 transition-colors hover:text-foreground hover:underline"
               >
                 hello@abtalks.com
               </a>
@@ -88,7 +84,7 @@ export function LandingFooter() {
           </div>
         </div>
 
-        <div className="mt-10 border-t border-slate-800/60 pt-8 text-center text-xs text-slate-500">
+        <div className="mt-12 pt-8 text-center text-xs text-slate-500 dark:text-slate-400">
           © {new Date().getFullYear()} ABTalks. All rights reserved.
         </div>
       </div>

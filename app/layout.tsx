@@ -19,8 +19,17 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className="dark scroll-smooth">
-      <body className={`min-h-screen bg-background font-sans antialiased ${GeistSans.className}`}>
+    <html lang="en" suppressHydrationWarning className="scroll-smooth">
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var t=localStorage.getItem('abtalks-theme');if(t==='dark')document.documentElement.classList.add('dark');else document.documentElement.classList.remove('dark');}catch(e){}})();`,
+          }}
+        />
+      </head>
+      <body
+        className={`min-h-screen bg-background font-sans tracking-tight antialiased ${GeistSans.className}`}
+      >
         {children}
       </body>
     </html>

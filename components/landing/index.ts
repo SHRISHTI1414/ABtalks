@@ -11,6 +11,7 @@ export {
   PodcastSection,
   type PodcastPreview,
 } from "./podcast-section";
+export { LearningSection } from "./learning-section";
 export { IndustryLeadersVideoSection } from "./industry-leaders-video-section";
 export { CommunitySection } from "./community-section";
 export { OutcomeSection } from "./outcome-section";
