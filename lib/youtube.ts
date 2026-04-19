@@ -43,7 +43,7 @@ function extractGuestAndCompany(
   const text = `${title} ${description}`;
   // "with X (Y)" or "X (Y)" or "X | Y" or "X - Y"
   const withParens = text.match(/(?:with\s+)?([A-Za-z\s]+)\s*[\(\|]\s*([^\)\|]+)[\)\|]/);
-  if (withParens) {
+  if (withParens?.[1] != null && withParens[2] != null) {
     const name = withParens[1].trim();
     const company = withParens[2].trim();
     if (name.length > 1 && company.length > 1) {
@@ -55,10 +55,12 @@ function extractGuestAndCompany(
   }
   // "Ex-Google" or "at Google" style
   const exCompany = text.match(/(?:Ex-|at\s+)([A-Za-z0-9&\s]+?)(?:\s|,|\.|$)/);
-  if (exCompany) {
+  const exCompanyName = exCompany?.[1];
+  if (exCompanyName != null) {
+    const trimmed = exCompanyName.trim();
     return {
       guestName: null,
-      companyMention: exCompany[1].trim().length > 30 ? null : exCompany[1].trim(),
+      companyMention: trimmed.length > 30 ? null : trimmed,
     };
   }
   return { guestName: null, companyMention: null };

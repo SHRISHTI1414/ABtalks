@@ -1,5 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 
+/** Avoid exhausting DB connections during Next.js dev hot reload. */
 const globalForPrisma = globalThis as unknown as { prisma: PrismaClient };
 
 export const prisma =

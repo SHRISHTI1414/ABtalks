@@ -1,12 +1,12 @@
 "use client";
-
+import type { LucideIcon } from "lucide-react";
 import { motion } from "framer-motion";
 import { Code2, Brain, Sparkles } from "lucide-react";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import type { DomainCard } from "@/lib/landing-content";
 import { cn } from "@/lib/utils";
 
-const icons = [Code2, Brain, Sparkles] as const;
+const icons: LucideIcon[] = [Code2, Brain, Sparkles];
 
 const container = {
   hidden: { opacity: 0 },

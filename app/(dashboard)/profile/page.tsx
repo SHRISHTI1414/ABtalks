@@ -28,9 +28,9 @@ export default function ProfilePage() {
   useEffect(() => {
     fetch("/api/auth/me")
       .then((res) => res.json())
-      .then((d) => {
-        if (d.error) throw new Error(d.error);
-        setUser(d.user);
+      .then((d: { ok?: boolean; data?: { user?: User }; error?: string }) => {
+        if (!d.ok || !d.data?.user) throw new Error(d.error ?? "Failed to load");
+        setUser(d.data.user);
       })
       .catch(() => setUser(null))
       .finally(() => setLoading(false));

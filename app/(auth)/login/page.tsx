@@ -14,6 +14,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { apiFetch } from "@/lib/api-client";
+import type { LoginSuccessData } from "@/lib/types/api";
 
 function LoginForm() {
   const router = useRouter();
@@ -29,14 +31,13 @@ function LoginForm() {
     setError("");
     setLoading(true);
     try {
-      const res = await fetch("/api/auth/login", {
+      const result = await apiFetch<LoginSuccessData>("/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
       });
-      const data = await res.json();
-      if (!res.ok) {
-        setError(data.error || "Login failed");
+      if (!result.ok) {
+        setError(result.error);
         return;
       }
       router.push(from);

@@ -89,6 +89,10 @@ const INDUSTRY_NOTES: Record<string, string> = {
     "AI/Deep Learning concepts used in research and industry applications.",
 };
 
+function industryNote(category: string): string {
+  return INDUSTRY_NOTES[category] ?? "";
+}
+
 async function main() {
   for (const domain of DOMAINS) {
     const category = CATEGORIES[domain];
@@ -103,13 +107,13 @@ async function main() {
           category,
           difficulty,
           description: `**${title}**\n\nSolve the following problem. This challenge focuses on ${category} fundamentals. Difficulty: ${difficulty}. Implement your solution and submit to verify.`,
-          industryNote: INDUSTRY_NOTES[category],
+          industryNote: industryNote(category),
         },
         update: {
           category,
           difficulty,
           description: `**${title}**\n\nSolve the following problem. This challenge focuses on ${category} fundamentals. Difficulty: ${difficulty}. Implement your solution and submit to verify.`,
-          industryNote: INDUSTRY_NOTES[category],
+          industryNote: industryNote(category),
         },
       });
     }

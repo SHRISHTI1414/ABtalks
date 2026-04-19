@@ -1,91 +1,51 @@
-import { NextResponse } from "next/server";
-import { Prisma } from "@prisma/client";
-import { prisma } from "@/lib/db";
-import { hashPassword, createToken, setSession } from "@/lib/auth";
+// TODO(security): Add rate limiting before production. No protection today.
+
 import { registerSchema } from "@/lib/validations/auth";
+import { createRegistration } from "@/features/auth/register";
+import { jsonErr, jsonOk } from "@/lib/json-response";
+import { logger } from "@/lib/logger";
+
+const ROUTE = "POST /api/auth/register";
 
 export async function POST(request: Request) {
   try {
-    const body = await request.json();
+    let body: unknown;
+    try {
+      body = await request.json();
+    } catch {
+      return jsonErr("Invalid JSON body", 400);
+    }
+
     const parsed = registerSchema.safeParse(body);
     if (!parsed.success) {
-      const first = parsed.error.flatten().fieldErrors;
-      const message = first.selectedDomain?.[0] ?? first.password?.[0] ?? first.email?.[0] ?? first.name?.[0] ?? "Invalid input";
-      return NextResponse.json(
-        { error: message },
-        { status: 400 }
-      );
+      const message =
+        parsed.error.issues[0]?.message ?? "Invalid input";
+      return jsonErr(message, 400);
     }
-    const { name, email, password, selectedDomain } = parsed.data;
-    const existing = await prisma.user.findUnique({ where: { email } });
-    if (existing) {
-      return NextResponse.json(
-        { error: "An account with this email already exists" },
-        { status: 400 }
-      );
+
+    const result = await createRegistration(parsed.data);
+
+    if (result.ok) {
+      return jsonOk({ user: result.user });
     }
-    const hashed = await hashPassword(password);
-    const user = await prisma.$transaction(async (tx) => {
-      const createdUser = await tx.user.create({
-        data: {
-          name: name.trim(),
-          email: email.toLowerCase(),
-          password: hashed,
-          selectedDomain,
-        },
-      });
 
-      const domains: Array<"SE" | "ML" | "AI"> = ["SE", "ML", "AI"];
-      for (const domain of domains) {
-        await tx.domainProgress.upsert({
-          where: { userId_domain: { userId: createdUser.id, domain } },
-          update: {},
-          create: { userId: createdUser.id, domain },
-        });
-      }
+    if (result.reason === "email_taken") {
+      return jsonErr("An account with this email already exists", 400);
+    }
 
-      return createdUser;
+    logger.error("Registration internal error", {
+      route: ROUTE,
+      cause:
+        result.cause instanceof Error
+          ? result.cause.message
+          : String(result.cause ?? "unknown"),
     });
-    const token = createToken({
-      userId: user.id,
-      email: user.email,
-      role: (user as any).role ?? "USER",
-    });
-    await setSession(token);
-    return NextResponse.json({
-      user: {
-        id: user.id,
-        name: user.name,
-        email: user.email,
-        selectedDomain: user.selectedDomain,
-        role: (user as any).role ?? "USER",
-      },
-    });
+    return jsonErr("Internal server error", 500);
   } catch (e) {
-    console.error(e);
-    if (e instanceof Prisma.PrismaClientInitializationError) {
-      return NextResponse.json(
-        { error: "Database connection failed. Check DATABASE_URL in Vercel env." },
-        { status: 500 }
-      );
-    }
-    if (e instanceof Prisma.PrismaClientKnownRequestError) {
-      if (e.code === "P2002") {
-        return NextResponse.json(
-          { error: "An account with this email already exists" },
-          { status: 400 }
-        );
-      }
-      if (e.code === "P2021" || e.code === "P2022") {
-        return NextResponse.json(
-          { error: "Database schema is outdated. Please run production migrations." },
-          { status: 500 }
-        );
-      }
-    }
-    return NextResponse.json(
-      { error: "Registration failed" },
-      { status: 500 }
-    );
+    logger.error("Register route unexpected error", {
+      route: ROUTE,
+      cause: e instanceof Error ? e.message : String(e),
+    });
+    return jsonErr("Internal server error", 500);
   }
 }

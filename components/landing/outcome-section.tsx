@@ -62,7 +62,7 @@ export function OutcomeSection({ outcomes }: { outcomes: OutcomeItem[] }) {
           className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4"
         >
           {outcomes.map((outcome, index) => {
-            const Icon = iconMap[index % iconMap.length];
+            const Icon = iconMap[index % iconMap.length]!;
             return (
               <motion.div
                 key={outcome.id}
