@@ -2,6 +2,8 @@ import jwt from "jsonwebtoken";
 import { cookies } from "next/headers";
 import bcrypt from "bcryptjs";
 import { NextResponse } from "next/server";
+import { jsonErr } from "./json-response";
+import { logger } from "./logger";
 import { prisma } from "./db";
 
 const JWT_SECRET = process.env.JWT_SECRET || "default-secret-change-me";
@@ -34,6 +36,16 @@ type JwtPayload = {
   role: "USER" | "ADMIN";
 };
 
+/** Next.js throws during static generation when `cookies()` is used — expected; don't spam logs. */
+function isNextStaticGenerationCookieError(e: unknown): boolean {
+  const msg = e instanceof Error ? e.message : String(e);
+  return (
+    msg.includes("Dynamic server usage") ||
+    msg.includes("couldn't be rendered statically") ||
+    msg.includes("dynamic-server-error")
+  );
+}
+
 export function createToken(payload: JwtPayload): string {
   return jwt.sign(payload, JWT_SECRET, {
     expiresIn: JWT_EXPIRES_IN as jwt.SignOptions["expiresIn"],
@@ -54,10 +66,19 @@ export function verifyToken(token: string): JwtPayload | null {
 }
 
 export async function getSession(): Promise<JwtPayload | null> {
-  const cookieStore = await cookies();
-  const token = cookieStore.get(COOKIE_NAME)?.value;
-  if (!token) return null;
-  return verifyToken(token);
+  try {
+    const cookieStore = await cookies();
+    const token = cookieStore.get(COOKIE_NAME)?.value;
+    if (!token) return null;
+    return verifyToken(token);
+  } catch (e) {
+    if (!isNextStaticGenerationCookieError(e)) {
+      logger.warn("getSession: unable to read session (e.g. cookies unavailable)", {
+        message: e instanceof Error ? e.message : String(e),
+      });
+    }
+    return null;
+  }
 }
 
 export async function setSession(token: string) {
@@ -104,23 +125,30 @@ export async function requireRole(
   | { ok: true; session: JwtPayload }
   | { ok: false; response: NextResponse }
 > {
-  const session = await getSession();
-  if (!session) {
+  try {
+    const session = await getSession();
+    if (!session) {
+      return {
+        ok: false,
+        response: jsonErr("Unauthorized", 401),
+      };
+    }
+    if (!allowedRoles.includes(session.role)) {
+      return {
+        ok: false,
+        response: jsonErr("Forbidden", 403),
+      };
+    }
+    return { ok: true, session };
+  } catch (e) {
+    logger.warn("requireRole: unexpected error; treating as unauthorized", {
+      message: e instanceof Error ? e.message : String(e),
+    });
     return {
       ok: false,
-      response: NextResponse.json(
-        { ok: false, error: "Unauthorized" },
-        { status: 401 }
-      ),
+      response: jsonErr("Unauthorized", 401),
     };
   }
-  if (!allowedRoles.includes(session.role)) {
-    return {
-      ok: false,
-      response: NextResponse.json({ ok: false, error: "Forbidden" }, { status: 403 }),
-    };
-  }
-  return { ok: true, session };
 }
 
 /** Shorthand for admin-only API routes. */
