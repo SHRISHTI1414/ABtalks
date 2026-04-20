@@ -36,6 +36,16 @@ type JwtPayload = {
   role: "USER" | "ADMIN";
 };
 
+/** Next.js throws during static generation when `cookies()` is used — expected; don't spam logs. */
+function isNextStaticGenerationCookieError(e: unknown): boolean {
+  const msg = e instanceof Error ? e.message : String(e);
+  return (
+    msg.includes("Dynamic server usage") ||
+    msg.includes("couldn't be rendered statically") ||
+    msg.includes("dynamic-server-error")
+  );
+}
+
 export function createToken(payload: JwtPayload): string {
   return jwt.sign(payload, JWT_SECRET, {
     expiresIn: JWT_EXPIRES_IN as jwt.SignOptions["expiresIn"],
@@ -62,9 +72,11 @@ export async function getSession(): Promise<JwtPayload | null> {
     if (!token) return null;
     return verifyToken(token);
   } catch (e) {
-    logger.warn("getSession: unable to read session (e.g. cookies unavailable)", {
-      message: e instanceof Error ? e.message : String(e),
-    });
+    if (!isNextStaticGenerationCookieError(e)) {
+      logger.warn("getSession: unable to read session (e.g. cookies unavailable)", {
+        message: e instanceof Error ? e.message : String(e),
+      });
+    }
     return null;
   }
 }
